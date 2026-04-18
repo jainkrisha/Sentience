@@ -5,7 +5,7 @@
  */
 
 const NVIDIA_NIM_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
-const MODEL = "meta/llama-3.1-70b-instruct"; // Flagship Llama-3.1 70B on NVIDIA API
+const MODEL = "meta/llama-3.1-8b-instruct"; // Fast Llama-3.1 8B — ~5-8x faster than 70B
 
 function getApiKey() {
   return process.env.NEXT_PUBLIC_KEY_GEMINI;
@@ -58,7 +58,7 @@ async function sendToOpenRouter(userMessage) {
       ],
       temperature: 1,
       top_p: 0.95,
-      max_tokens: 8192,
+      max_tokens: 4096,
     }),
   });
 

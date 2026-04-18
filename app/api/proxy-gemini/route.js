@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 const NVIDIA_NIM_URL = "https://integrate.api.nvidia.com/v1/chat/completions";
-const MODEL = "meta/llama-3.1-70b-instruct";
+const MODEL = "meta/llama-3.1-8b-instruct"; // Fast ~5-8x faster than 70B
 
 export async function POST(request) {
   try {
@@ -28,7 +28,7 @@ export async function POST(request) {
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.7,
         top_p: 0.95,
-        max_tokens: 8192,
+        max_tokens: 4096,
       }),
     });
 

@@ -45,6 +45,17 @@ function TagBadge({ label, onRemove }) {
   );
 }
 
+/** Salvages complete Q&A objects from a truncated JSON array string */
+function repairTruncatedJson(raw) {
+    const results = [];
+    const regex = /\{\s*"question"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"answer"\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}/g;
+    let match;
+    while ((match = regex.exec(raw)) !== null) {
+        results.push({ question: match[1], answer: match[2] });
+    }
+    return results;
+}
+
 function AddNewInterview() {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [jobRole, setJobRole] = React.useState("");
@@ -105,35 +116,25 @@ function AddNewInterview() {
 
         const techList = techTags.join(", ") || "General software engineering";
 
-        return `You are an expert technical interviewer with 15+ years of experience hiring for ${finalRole} roles at top tech companies.
+        return `You are an expert technical interviewer hiring for ${finalRole} roles.
 
 Generate exactly ${questionCount} interview questions for:
 - Role: ${finalRole}
 - Tech Stack: ${techList}
 - Experience Level: ${levelLabel}
 
-STRICT RULES:
-1. Questions must be directly tied to "${finalRole}" and the tech stack: ${techList}
-2. Each question must belong to a DIFFERENT category from this list:
-   [Technical Concept, Coding/Implementation, System Design, Debugging/Troubleshooting, Best Practices, Problem-Solving, ${expLevel >= 5 ? 'Architecture, Leadership' : 'Fundamentals'}]
-3. Experience-based depth:
-   - Entry/Junior: Focus on core concepts, syntax, simple implementations
-   - Mid-Level: Architecture decisions, debugging, optimization
-   - Senior+: System design, scalability, trade-offs, mentoring
-4. Answers must be detailed, specific, and include examples where relevant
-5. Do NOT ask generic HR questions like "tell me about yourself" or "what are your strengths"
-6. NEVER repeat a tech or concept across questions
-7. Return ONLY a raw JSON array — NO markdown, NO code fences, NO explanation
+RULES:
+1. Questions must be specific to "${finalRole}" and the tech stack: ${techList}
+2. Cover DIFFERENT categories: Technical Concept, Coding, System Design, Debugging, Best Practices
+3. ${expLevel >= 5 ? 'Focus on architecture, scalability, trade-offs' : 'Focus on core concepts and implementations'}
+4. Answers must be concise: 2-3 sentences max, include one example
+5. No generic HR questions
+6. Return ONLY a raw JSON array — NO markdown, NO code fences, NO extra text
 
-Required JSON format:
-[
-  {
-    "question": "specific technical question here",
-    "answer": "detailed model answer with examples, best practices, and what the interviewer is looking for"
-  }
-]
+JSON format:
+[{"question":"...","answer":"..."}]
 
-Return exactly ${questionCount} items in the array.`;
+Return exactly ${questionCount} items.`;
     };
 
     const onSubmit = async (e) => {
@@ -156,10 +157,20 @@ Return exactly ${questionCount} items in the array.`;
             try {
                 jsonResponse = JSON.parse(responseText);
             } catch {
-                // Try to extract JSON array from response
+                // Try to extract a complete JSON array from the response
                 const match = responseText.match(/\[[\s\S]*\]/);
-                if (match) jsonResponse = JSON.parse(match[0]);
-                else throw new Error("Could not parse AI response as JSON");
+                if (match) {
+                    try {
+                        jsonResponse = JSON.parse(match[0]);
+                    } catch {
+                        // JSON was truncated — salvage complete objects
+                        const repaired = repairTruncatedJson(responseText);
+                        if (repaired.length > 0) jsonResponse = repaired;
+                        else throw new Error("AI response was cut off. Please try again.");
+                    }
+                } else {
+                    throw new Error("Could not parse AI response as JSON");
+                }
             }
 
             if (!Array.isArray(jsonResponse) || jsonResponse.length === 0) {
