@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+fer
+tensorflow
+opencv-python
+mediapipe
+numpy

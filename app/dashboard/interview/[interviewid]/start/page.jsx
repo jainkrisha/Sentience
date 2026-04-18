@@ -1,12 +1,13 @@
 "use client";
-import { mockinterview } from '@/utils/schema';
+import { interview_sessions } from '@/utils/schema';
 import { eq } from 'drizzle-orm';
 import React, { useEffect } from 'react';
 import {db} from 'utils/db';
 import QuestionsList from './_components/QuestionsList';
-import RecordAnswerSection from './_components/RecordAnswerSection';
+import LiveInterviewEngine from './_components/LiveInterviewEngine';
+import { MetricsProvider } from '@/context/MetricsContext';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import EndInterviewButton from './_components/EndInterviewButton';
 
 function StartInterview({params}) {
 
@@ -26,8 +27,8 @@ function StartInterview({params}) {
           console.log("Interview ID:", params.interviewid);
           const result = await db
             .select()
-            .from(mockinterview)
-            .where(eq(mockinterview.mockid, params.interviewid));
+            .from(interview_sessions)
+            .where(eq(interview_sessions.mockId, params.interviewid));
           
           if (result.length === 0) {
             console.error("No interview data found for the given interview ID:", params.interviewid);
@@ -36,7 +37,7 @@ function StartInterview({params}) {
           
           console.log("Interview Data:", result);
           
-          const questions = JSON.parse(result[0].jsonmockresp);
+          const questions = JSON.parse(result[0].generatedQuestions);
           setMockinterviewquestions(questions);
           setInterviewdata(result[0]);
           
@@ -47,11 +48,21 @@ function StartInterview({params}) {
 
 
   return (
-    <div>
+    <MetricsProvider>
+      <div>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
             <QuestionsList  mockinterviewquestions ={mockinterviewquestions} activequestionindex={activequestionindex}/>
 
-            <RecordAnswerSection mockinterviewquestions ={mockinterviewquestions} activequestionindex={activequestionindex}  interviewdata ={interviewdata}/>
+            <LiveInterviewEngine 
+              mockinterviewquestions={mockinterviewquestions} 
+              activequestionindex={activequestionindex} 
+              interviewdata={interviewdata}
+              onNextQuestion={() => {
+                if (activequestionindex < mockinterviewquestions?.length - 1) {
+                  setActivequestionindex(activequestionindex + 1);
+                }
+              }}
+            />
         </div>
         <div className='flex justify-end gap-6'>
           {activequestionindex > 0 &&
@@ -59,11 +70,11 @@ function StartInterview({params}) {
           {activequestionindex!= mockinterviewquestions?.length-1 && 
           <Button onClick={()=>setActivequestionindex(activequestionindex+1)}>Next Question</Button>}
           {activequestionindex === mockinterviewquestions?.length-1 && 
-          <Link href={`/dashboard/interview/${params.interviewid}/feedback`}>
-          <Button>End Interview</Button>
-          </Link>}
+            <EndInterviewButton mockId={params.interviewid} />
+          }
         </div>
-    </div>
+      </div>
+    </MetricsProvider>
   )
 }
 

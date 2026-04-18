@@ -8,12 +8,11 @@ import { toast } from 'sonner';
 import { chatSession } from '@/utils/Geminimodel';
 import { db } from '@/utils/db';
 import moment from 'moment';
-import { userAnswers } from '@/utils/schema';
+import { interview_answers } from '@/utils/schema';
 
-// Dynamically import Webcam so it doesn't load on the server
-const Webcam = dynamic(() => import('react-webcam'), { ssr: false });
+// Removed react-webcam dynamic import since the external Camera handles video
 
-function RecordAnswerSection({ mockinterviewquestions, activequestionindex, interviewdata }) {
+function RecordAnswerSection({ mockinterviewquestions, activequestionindex, interviewdata, onNextQuestion }) {
   const [userAnswer, setUserAnswer] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -63,7 +62,7 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
         await transcribeAudio(audioBlob, mimeType);
       };
 
-      mediaRecorder.start(250); // collect chunks every 250ms
+      mediaRecorder.start(); // collect all audio as a single chunk at the end
       setIsRecording(true);
       toast.info('Recording started — speak clearly');
     } catch (err) {
@@ -96,8 +95,9 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
 
     try {
       const ext = mimeType.includes('webm') ? '.webm' : '.wav';
+      const file = new File([audioBlob], `recording${ext}`, { type: mimeType });
       const formData = new FormData();
-      formData.append('audio', audioBlob, `recording${ext}`);
+      formData.append('audio', file);
 
       const res = await fetch('/api/transcribe', {
         method: 'POST',
@@ -129,7 +129,7 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
   // ─── Submit Answer to DB ───────────────────────────────────────────────────
 
   const updateUserAnswerInDb = async () => {
-    if (!interviewdata?.mockid) {
+    if (!interviewdata?.mockId) {
       toast.error('Interview data not available. Please try again.');
       return;
     }
@@ -168,19 +168,22 @@ Return ONLY this JSON:
         return;
       }
 
-      await db.insert(userAnswers).values({
-        mockidRef: interviewdata.mockid,
-        question: mockinterviewquestions[activequestionindex]?.question,
-        correctanswer: mockinterviewquestions[activequestionindex]?.answer,
-        useranswer: userAnswer,
-        feedback: jsonResponse?.feedback,
-        rating: jsonResponse?.rating,
-        userEmail: userEmail,
-        createdat: moment().format('YYYY-MM-DD HH:mm:ss'),
+      await db.insert(interview_answers).values({
+        sessionId: String(interviewdata.mockId),
+        question: String(mockinterviewquestions[activequestionindex]?.question),
+        correctAnswer: String(mockinterviewquestions[activequestionindex]?.answer),
+        userAnswer: String(userAnswer),
+        feedback: String(jsonResponse?.feedback),
+        rating: Number(jsonResponse?.rating),
+        userEmail: String(userEmail || 'anonymous'),
+        createdAt: moment().format('DD-MM-yyyy'),
       });
 
       toast.success('Answer submitted! Click Next Question to continue.');
       setUserAnswer('');
+      if (onNextQuestion) {
+        onNextQuestion();
+      }
     } catch (err) {
       console.error('Submit error:', err);
       toast.error('Failed to submit answer: ' + err.message);
@@ -199,28 +202,6 @@ Return ONLY this JSON:
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
-      {/* Webcam */}
-      <div className="flex flex-col mt-10 justify-center items-center rounded-lg p-5 bg-black w-full max-w-lg">
-        {webcamError ? (
-          <p className="text-red-400 text-sm text-center">{webcamError}</p>
-        ) : (
-          <>
-            <Image
-              src="/webcam.png"
-              width={200}
-              height={200}
-              className="absolute opacity-20"
-              alt="Webcam Placeholder"
-            />
-            <Webcam
-              mirrored={true}
-              onUserMediaError={handleWebcamError}
-              style={{ width: '100%', height: 280, zIndex: 10 }}
-            />
-          </>
-        )}
-      </div>
-
       {/* Controls */}
       <div className="w-full max-w-lg flex flex-col items-center gap-4 mt-8">
         {/* Record Button */}

@@ -1,5 +1,5 @@
 "use client";
-import { mockinterview } from '@/utils/schema';
+import { interview_sessions } from '@/utils/schema';
 import { eq } from 'drizzle-orm';
 import React, { useEffect } from 'react';
 import { db } from '@/utils/db';    
@@ -21,8 +21,8 @@ function Interview({ params }) {
     try {
       const result = await db
         .select()
-        .from(mockinterview)
-        .where(eq(mockinterview.mockid, params.interviewid));
+        .from(interview_sessions)
+        .where(eq(interview_sessions.mockId, params.interviewid));
       console.log(result);
       setInterviewdata(result[0]);
     } catch (error) {
@@ -38,14 +38,14 @@ function Interview({ params }) {
           <div className="flex flex-col gap-5">
             <div className="p-5 rounded-lg border">
               <h2 className="text-lg">
-                <strong>Job Post:</strong> {interviewdata.jobposition}
+                <strong>Job Post:</strong> {interviewdata.jobPosition}
               </h2>
               <h2 className="text-lg">
                 <strong>Job Description/TechStack:</strong>{" "}
-                {interviewdata.jobdescription}
+                {interviewdata.jobDescription}
               </h2>
               <h2 className="text-lg">
-                <strong>Years of Experience:</strong> {interviewdata.jobexp}
+                <strong>Years of Experience:</strong> {interviewdata.jobExperience}
               </h2>
             </div>
             <div className='p-5 border rounded-lg border-yellow-300 bg-yellow-100'>

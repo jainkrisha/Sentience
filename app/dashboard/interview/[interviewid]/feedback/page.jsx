@@ -1,6 +1,6 @@
 "use client";
 import { db } from '@/utils/db';
-import { userAnswers } from '@/utils/schema';
+import { interview_answers, session_metrics } from '@/utils/schema';
 import { eq } from 'drizzle-orm';
 import React, { useEffect, useState } from 'react';
 import {
@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 
 function Feedback({ params }) {
   const [feedbackData, setFeedbackData] = useState([]);
+  const [sessionMetrics, setSessionMetrics] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
   const router = useRouter();
 
@@ -23,13 +24,21 @@ function Feedback({ params }) {
 
   const GetInterviewData = async () => {
     const result = await db.select()
-      .from(userAnswers)
-      .where(eq(userAnswers.mockidRef, params.interviewid))
-      .orderBy(userAnswers.id);
+      .from(interview_answers)
+      .where(eq(interview_answers.sessionId, params.interviewid))
+      .orderBy(interview_answers.id);
 
     console.log(result);
     setFeedbackData(result);
     calculateAverageRating(result);
+
+    const metricsResult = await db.select()
+      .from(session_metrics)
+      .where(eq(session_metrics.sessionId, params.interviewid));
+    
+    if (metricsResult.length > 0) {
+      setSessionMetrics(metricsResult[0]);
+    }
   };
 
   const calculateAverageRating = (data) => {
@@ -60,6 +69,34 @@ function Feedback({ params }) {
             Find below interview questions with the correct answer, your answer, and feedback for improvement
           </h2>
 
+          {sessionMetrics && (
+            <div className="my-6 p-6 border rounded-xl bg-slate-900 text-white shadow-lg">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                Body Language Analytics
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-slate-800 rounded-lg text-center">
+                  <p className="text-sm text-slate-400">Eye Contact Score</p>
+                  <p className={`text-2xl font-bold ${sessionMetrics.eyeContactScore > 70 ? 'text-green-400' : 'text-amber-400'}`}>
+                    {sessionMetrics.eyeContactScore}%
+                  </p>
+                </div>
+                <div className="p-4 bg-slate-800 rounded-lg text-center">
+                  <p className="text-sm text-slate-400">Hand Gestures Used</p>
+                  <p className="text-2xl font-bold text-blue-400">
+                    {sessionMetrics.handGestureCount}
+                  </p>
+                </div>
+                <div className="p-4 bg-slate-800 rounded-lg text-center">
+                  <p className="text-sm text-slate-400">Bad Posture Alerts</p>
+                  <p className={`text-2xl font-bold ${sessionMetrics.badPostureCount === 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    {sessionMetrics.badPostureCount}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {feedbackData && feedbackData.map((data, index) => (
             <div key={index}>
               <Collapsible className='mt-6'>
@@ -72,10 +109,10 @@ function Feedback({ params }) {
                       <strong>Rating:</strong> {data.rating}
                     </h2>
                     <h2 className='p-2 border bg-red-50 text-sm rounded-lg text-red-900'>
-                      <strong>Your Answer: </strong> {data.useranswer}
+                      <strong>Your Answer: </strong> {data.userAnswer}
                     </h2>
                     <h2 className='p-2 border bg-green-50 text-sm rounded-lg text-green-900 text-justify'>
-                      <strong>Correct Answer: </strong> {data.correctanswer}
+                      <strong>Correct Answer: </strong> {data.correctAnswer}
                     </h2>
                     <h2 className='p-2 border bg-blue-50 text-sm rounded-lg text-primary text-justify'>
                       <strong>Feedback: </strong> {data.feedback}

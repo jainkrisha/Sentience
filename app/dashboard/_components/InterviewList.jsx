@@ -1,6 +1,6 @@
 "use client";
 import { db } from '@/utils/db';
-import { mockinterview } from '@/utils/schema';
+import { interview_sessions } from '@/utils/schema';
 import { desc, eq } from 'drizzle-orm';
 import React, { useEffect } from 'react'
 import InterviewcardList from './InterviewcardList';
@@ -29,9 +29,9 @@ function InterviewList() {
 
     const GetInterviewList = async () => {
         const response = await db.select()
-        .from(mockinterview)
-        .where(eq(mockinterview.createdby, userEmail))
-        .orderBy(desc(mockinterview.id));
+        .from(interview_sessions)
+        .where(eq(interview_sessions.createdBy, userEmail))
+        .orderBy(desc(interview_sessions.id));
 
         console.log(response);
 
