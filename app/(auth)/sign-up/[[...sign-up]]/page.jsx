@@ -65,9 +65,9 @@ export default function Page() {
         <div className="relative z-10 flex flex-col justify-center h-full px-16 xl:px-24">
           <Link href="/" className="absolute top-10 left-16 flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
             <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-md">
-              <span className="text-blue-600 font-bold text-xl leading-none">I</span>
+              <span className="text-blue-600 font-bold text-xl leading-none">S</span>
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-white">IPSUM</span>
+            <span className="font-extrabold text-2xl tracking-tight text-white">SENTIENCE</span>
           </Link>
 
           <h1 className="text-5xl xl:text-6xl font-extrabold text-white leading-tight mb-6">
@@ -83,7 +83,7 @@ export default function Page() {
             <div className="flex gap-1 mb-3 text-amber-300">
               ★★★★★
             </div>
-            <p className="text-white italic mb-4 font-medium leading-relaxed">"IPSUM completely changed the way I prepare for interviews. The tailored feedback gave me the confidence to ace my final rounds."</p>
+            <p className="text-white italic mb-4 font-medium leading-relaxed">"SENTIENCE completely changed the way I prepare for interviews. The tailored feedback gave me the confidence to ace my final rounds."</p>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center text-cyan-700 font-bold">MK</div>
               <div>
@@ -101,9 +101,9 @@ export default function Page() {
           {/* Mobile Header */}
           <div className="lg:hidden mb-12 text-center flex justify-center items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-              <span className="text-white font-bold text-xl leading-none">I</span>
+              <span className="text-white font-bold text-xl leading-none">S</span>
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
+            <span className="font-extrabold text-2xl tracking-tight text-gray-900">SENTIENCE</span>
           </div>
 
           <div className="mb-10 text-center lg:text-left">

@@ -103,7 +103,7 @@ export default function SignUpPage() {
           {/* Mobile Header */}
           <div className="lg:hidden mb-12 flex justify-center items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-md">
-              <span className="text-white font-bold text-xl leading-none">I</span>
+              <span className="text-white font-bold text-xl leading-none">S</span>
             </div>
             <span className="font-extrabold text-2xl tracking-tight text-gray-900">SENTIENCE</span>
           </div>
@@ -274,9 +274,9 @@ export default function SignUpPage() {
         <div className="relative z-10 flex flex-col justify-center h-full px-16 xl:px-24">
           <Link href="/" className="absolute top-10 right-16 flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-md">
-              <span className="text-white font-bold text-xl leading-none">I</span>
+              <span className="text-white font-bold text-xl leading-none">S</span>
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
+            <span className="font-extrabold text-2xl tracking-tight text-gray-900">SENTIENCE</span>
           </Link>
 
           <div className="flex flex-col items-start max-w-lg">
