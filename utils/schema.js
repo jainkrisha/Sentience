@@ -2,9 +2,11 @@ import { pgTable, serial, text, varchar, timestamp, integer, boolean } from "dri
 
 export const usersTable = pgTable("users", {
         id: serial("id").primaryKey().notNull(),
+        name: varchar("name", { length: 255 }),         // kept to match live DB — do not remove
+        username: varchar("username", { length: 255 }), // kept to match live DB — do not remove
         email: varchar("email", { length: 255 }).notNull().unique(),
         password: varchar("password", { length: 255 }).notNull(),
-        createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow(),     
+        createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow(),
 });
 
 

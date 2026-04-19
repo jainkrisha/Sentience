@@ -3,15 +3,19 @@ import { db } from '../../../utils/db';
 import { cv_uploads, preparation_planner } from '../../../utils/schema';
 import { chatSession } from '../../../utils/Geminimodel';
 import { eq } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
+
+/** Read the user email from the cookie set at sign-in. */
+function getUserEmail(req) {
+  const cookie = req.cookies.get('user_email');
+  return cookie?.value ? decodeURIComponent(cookie.value) : null;
+}
 
 export async function POST(req) {
   try {
-    const user = await currentUser();
-    if (!user) {
+    const userEmail = getUserEmail(req);
+    if (!userEmail) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const userEmail = user.primaryEmailAddress.emailAddress;
 
     const { cvText } = await req.json();
 

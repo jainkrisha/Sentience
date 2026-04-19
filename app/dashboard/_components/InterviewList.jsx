@@ -38,10 +38,15 @@ function InterviewList() {
         setInterviewList(response);
     }
   return (
-    <div>
-        <h2 className='font-bold text-xl'>Previous Mock Interviews</h2>
+    <div className="mt-10">
+        <div className="flex items-center justify-between mb-6">
+            <div>
+                <h2 className='font-extrabold text-2xl text-gray-900 tracking-tight'>Previous Mock Interviews</h2>
+                <p className="text-gray-500 text-sm font-medium mt-1">{interviewList.length} session{interviewList.length !== 1 ? 's' : ''} recorded</p>
+            </div>
+        </div>
 
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 my-4 gap-5'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5'>
             {interviewList && interviewList.map((interview,index) => (
                 <InterviewcardList key={index} interview={interview} />
             ))}

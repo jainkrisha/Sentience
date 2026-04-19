@@ -26,42 +26,49 @@ function Header() {
     }, [])
 
     return (
-        <div className='flex p-4 items-center justify-between bg-secondary shadow-sm'>
-            <Link href="/dashboard">
-                <Image src={'/logo.svg'} width={160} height={100} alt='logo' className='cursor-pointer' />
+        <div className='flex p-4 items-center justify-between bg-white shadow-sm border-b border-gray-100'>
+            <Link href="/dashboard" className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <span className="text-white font-bold text-xl leading-none">I</span>
+                </div>
+                <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
             </Link>
-            <ul className='hidden md:flex gap-6'>
+            <ul className='hidden md:flex gap-8 items-center'>
                 <Link href={"/dashboard"}>
-                    <li className={`hover:text-primary hover:font-bold transition-all
-                    cursor-pointer
-                    ${path == '/dashboard' && 'text-primary font-bold'}
-                    `}
-                    >Dashboard</li>
+                    <li className={`text-sm font-medium transition-colors hover:text-blue-600 cursor-pointer ${path == '/dashboard' ? 'text-blue-600 font-bold' : 'text-gray-600'}`}>
+                        Dashboard
+                    </li>
                 </Link>
                 <Link href={"/dashboard/questions"}>
-                    <li className={`hover:text-primary hover:font-bold transition-all
-                    cursor-pointer
-                    ${path == '/dashboard/questions' && 'text-primary font-bold'}
-                    `}>Questions</li>
+                    <li className={`text-sm font-medium transition-colors hover:text-blue-600 cursor-pointer ${path == '/dashboard/questions' ? 'text-blue-600 font-bold' : 'text-gray-600'}`}>
+                        Questions
+                    </li>
                 </Link>
                 <Link href={"/dashboard/ats-checker"}>
-                    <li className={`hover:text-primary hover:font-bold transition-all
-                    cursor-pointer
-                    ${path == '/dashboard/ats-checker' && 'text-primary font-bold'}
-                    `}>ATS Checker</li>
+                    <li className={`text-sm font-medium transition-colors hover:text-blue-600 cursor-pointer ${path == '/dashboard/ats-checker' ? 'text-blue-600 font-bold' : 'text-gray-600'}`}>
+                        ATS Checker
+                    </li>
                 </Link>
-                <li className={`hover:text-primary hover:font-bold transition-all
-                cursor-pointer
-                ${path == '/dashboard/how' && 'text-primary font-bold'}
-                `}>How it Works?</li>
+                <Link href={"/dashboard/user-profile"}>
+                    <li className={`text-sm font-medium transition-colors hover:text-blue-600 cursor-pointer ${path == '/dashboard/user-profile' ? 'text-blue-600 font-bold' : 'text-gray-600'}`}>
+                        User Profile
+                    </li>
+                </Link>
+                <Link href={"/dashboard/how"}>
+                    <li className={`text-sm font-medium transition-colors hover:text-blue-600 cursor-pointer ${path == '/dashboard/how' ? 'text-blue-600 font-bold' : 'text-gray-600'}`}>
+                        How it Works?
+                    </li>
+                </Link>
             </ul>
             <div className='relative'>
                 <button 
                     onClick={() => setShowMenu(!showMenu)}
-                    className='flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-gray-300 hover:bg-gray-50'
+                    className='flex items-center gap-2 px-3 py-2 rounded-full bg-white border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all focus:ring-2 focus:ring-blue-100 outline-none'
                 >
-                    <div className='w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500'></div>
-                    <span className='text-sm font-medium'>Menu</span>
+                    <div className='w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm'>
+                        U
+                    </div>
+                    <span className='text-sm font-medium text-gray-700 hidden sm:block'>Menu</span>
                 </button>
                 
                 {showMenu && (

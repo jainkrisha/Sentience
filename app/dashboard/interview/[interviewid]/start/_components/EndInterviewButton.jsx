@@ -34,8 +34,12 @@ export default function EndInterviewButton({ mockId }) {
   };
 
   return (
-    <Button onClick={handleEnd} disabled={loading}>
-      {loading ? 'Saving...' : 'End Interview'}
+    <Button 
+      onClick={handleEnd} 
+      disabled={loading}
+      className="px-8 py-6 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg shadow-red-200 transition-all hover:-translate-y-0.5"
+    >
+      {loading ? 'Saving...' : 'End Review'}
     </Button>
   );
 }

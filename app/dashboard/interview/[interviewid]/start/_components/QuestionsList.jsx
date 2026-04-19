@@ -5,6 +5,9 @@ import React from 'react'
 function QuestionsList({mockinterviewquestions,activequestionindex}) {
     const texttoSpeech = (text) => {
         if('speechSynthesis' in window){
+            // Cancel any ongoing speech to prevent overlapping/looping
+            window.speechSynthesis.cancel();
+            
             const speech = new SpeechSynthesisUtterance(text);
 
             const voices = window.speechSynthesis.getVoices();
@@ -12,7 +15,7 @@ function QuestionsList({mockinterviewquestions,activequestionindex}) {
 
             // Use the selected female voice if found
             if (femaleVoice) {
-            speech.voice = femaleVoice;
+                speech.voice = femaleVoice;
             }
 
             window.speechSynthesis.speak(speech);
@@ -20,7 +23,22 @@ function QuestionsList({mockinterviewquestions,activequestionindex}) {
         else{
             alert('Your browser does not support text to speech');
         }
-}
+    }
+
+    React.useEffect(() => {
+        const questionText = mockinterviewquestions?.[activequestionindex]?.question;
+        if (!questionText) return;
+
+        // Auto-read the question after 3.5 seconds
+        const timer = setTimeout(() => {
+            texttoSpeech(questionText);
+        }, 3500);
+
+        // Cleanup: clear timeout if user navigates to next question before 3.5s
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [activequestionindex, mockinterviewquestions]);
   return mockinterviewquestions &&(
     <div className='p-5 border rounded-lg my-10'>
         <div className='grid grid-cols-2 md:grid-cols-3  lg:grid-cols-4 gap-5'>

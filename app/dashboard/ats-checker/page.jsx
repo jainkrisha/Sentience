@@ -102,63 +102,69 @@ export default function ATSCheckerPage() {
   };
 
   return (
-    <div className="p-10 max-w-5xl mx-auto">
-      <div className="flex items-center gap-3 mb-2">
-        <Search className="w-8 h-8 text-indigo-600" />
-        <h2 className="text-3xl font-bold text-gray-900">ResumeATS Pro</h2>
+    <div className="p-6 md:p-10 max-w-7xl mx-auto min-h-screen">
+      <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="p-3 bg-blue-100 rounded-xl">
+            <Search className="w-8 h-8 text-blue-600" />
+          </div>
+          <h2 className="text-3xl font-extrabold text-gray-900 tracking-tight">ResumeATS Pro</h2>
+        </div>
+        <p className="text-gray-500 text-lg font-medium">Optimize Your Resume for ATS and Land Your Dream Job</p>
       </div>
-      <p className="text-gray-500 mb-8 text-lg">Optimize Your Resume for ATS and Land Your Dream Job</p>
       
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
         
         {/* Left Column: Input Form */}
-        <div className="md:col-span-4 flex flex-col gap-6 bg-white p-6 rounded-xl border shadow-sm h-fit">
+        <div className="md:col-span-4 flex flex-col gap-6 bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-lg hover:shadow-blue-50 transition-all h-fit animate-in fade-in slide-in-from-bottom-6 duration-700">
           
           <div>
-            <label className="block text-sm font-semibold mb-2">Upload your resume (PDF)</label>
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-gray-50 transition-colors">
-              <UploadCloud className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+            <label className="block text-sm font-bold text-gray-900 mb-3">Upload your resume (PDF)</label>
+            <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center hover:bg-blue-50 hover:border-blue-300 transition-colors group cursor-pointer relative overflow-hidden">
+              <UploadCloud className="w-10 h-10 mx-auto text-gray-400 group-hover:text-blue-500 mb-3 transition-colors" />
               <input 
                 type="file" 
                 accept="application/pdf"
-                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 onChange={handleFileChange}
               />
-              {file && <p className="text-sm text-green-600 mt-2 font-medium">✓ {file.name}</p>}
+              <span className="text-sm font-bold text-blue-600 group-hover:text-blue-700">Click to upload</span>
+              <span className="text-sm text-gray-500 block mt-1">or drag and drop</span>
+              {file && <p className="text-sm text-green-600 mt-4 font-bold bg-green-50 py-2 px-3 rounded-lg inline-block">✓ {file.name}</p>}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Job description (optional)</label>
+            <label className="block text-sm font-bold text-gray-900 mb-3">Job description (optional)</label>
             <Textarea 
               placeholder="Paste the target job description here..."
-              className="min-h-[120px]"
+              className="min-h-[120px] bg-gray-50 border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 transition-all resize-y"
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-semibold mb-2">Choose analysis type:</label>
+            <label className="block text-sm font-bold text-gray-900 mb-3">Choose analysis type:</label>
             <div className="flex flex-col gap-3">
               {['Quick Scan', 'Detailed Analysis', 'ATS Optimization'].map((option) => (
-                <label key={option} className="flex items-center gap-2 cursor-pointer p-2 border rounded-lg hover:bg-gray-50 transition-colors">
+                <label key={option} className={`flex items-center gap-3 cursor-pointer p-4 border rounded-xl transition-all ${analysisOption === option ? 'bg-blue-50 border-blue-200 shadow-sm' : 'hover:bg-gray-50 border-gray-100'}`}>
                   <input 
                     type="radio" 
                     name="analysis_option" 
                     value={option}
                     checked={analysisOption === option}
                     onChange={(e) => setAnalysisOption(e.target.value)}
-                    className="w-4 h-4 text-indigo-600"
+                    className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
-                  <span className="text-sm font-medium">{option}</span>
+                  <span className={`text-sm font-bold ${analysisOption === option ? 'text-blue-900' : 'text-gray-700'}`}>{option}</span>
                 </label>
               ))}
             </div>
           </div>
 
           <Button 
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-6 text-lg"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 text-lg rounded-xl shadow-lg shadow-blue-200 transition-transform hover:-translate-y-0.5 mt-2"
             onClick={handleAnalyze}
             disabled={loading}
           >
@@ -167,58 +173,71 @@ export default function ATSCheckerPage() {
         </div>
 
         {/* Right Column: Results */}
-        <div className="md:col-span-8">
-          <div className="bg-white p-8 rounded-xl border shadow-sm min-h-[500px]">
-            <h3 className="text-xl font-bold flex items-center gap-2 mb-6 border-b pb-4">
-              <FileText className="w-6 h-6 text-indigo-600" />
+        <div className="md:col-span-8 animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="bg-white p-8 md:p-10 rounded-2xl border border-gray-100 shadow-sm min-h-[600px] hover:shadow-lg hover:shadow-blue-50 transition-all">
+            <h3 className="text-2xl font-extrabold flex items-center gap-3 mb-8 border-b border-gray-100 pb-6 text-gray-900">
+              <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+                <FileText className="w-6 h-6" />
+              </div>
               Analysis Results
             </h3>
             
             {!analysisResult && !loading && (
-              <div className="flex flex-col items-center justify-center h-full text-gray-400 py-20">
-                <FileText className="w-16 h-16 mb-4 opacity-20" />
-                <p>Upload a resume and click analyze to see your results here.</p>
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 py-32">
+                <FileText className="w-20 h-20 mb-6 opacity-20" />
+                <p className="font-medium text-lg">Upload a resume and click analyze to see your results here.</p>
               </div>
             )}
 
             {loading && (
-              <div className="flex flex-col items-center justify-center h-full text-indigo-600 py-20">
-                <LoaderCircle className="w-12 h-12 animate-spin mb-4" />
-                <p className="font-medium animate-pulse">Running advanced ATS algorithms...</p>
+              <div className="flex flex-col items-center justify-center h-full text-blue-600 py-32">
+                <LoaderCircle className="w-16 h-16 animate-spin mb-6" />
+                <p className="font-bold text-lg animate-pulse text-blue-800">Running advanced ATS algorithms...</p>
               </div>
             )}
 
             {analysisResult && (
-              <div className="prose prose-indigo max-w-none text-gray-800 whitespace-pre-wrap">
+              <div className="prose prose-blue max-w-none text-gray-700 whitespace-pre-wrap leading-relaxed font-medium">
                 {analysisResult}
               </div>
             )}
 
             {/* Q&A Section */}
             {analysisResult && (
-              <div className="mt-12 pt-8 border-t border-gray-200">
-                <h4 className="text-lg font-bold flex items-center gap-2 mb-4">
-                  <MessageSquare className="w-5 h-5 text-indigo-600" />
-                  Have questions about your resume?
-                </h4>
-                <div className="flex gap-2">
-                  <Input 
-                    placeholder="E.g. What skills am I missing for a Frontend Developer role?" 
-                    value={userQuestion}
-                    onChange={(e) => setUserQuestion(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleAskQuestion()}
-                  />
-                  <Button onClick={handleAskQuestion} disabled={qaLoading || !userQuestion.trim()}>
-                    {qaLoading ? <LoaderCircle className="w-4 h-4 animate-spin" /> : 'Ask'}
-                  </Button>
-                </div>
-                
-                {qaResult && (
-                  <div className="mt-4 p-4 bg-indigo-50 border border-indigo-100 rounded-lg whitespace-pre-wrap text-sm text-indigo-900">
-                    <span className="font-bold block mb-2">Answer:</span>
-                    {qaResult}
+              <div className="mt-16 pt-10 border-t border-gray-100">
+                <div className="bg-gray-50 rounded-2xl p-8 border border-gray-100">
+                  <h4 className="text-xl font-bold flex items-center gap-3 mb-6 text-gray-900">
+                    <div className="p-2 bg-white rounded-lg text-blue-600 shadow-sm border border-gray-100">
+                      <MessageSquare className="w-5 h-5" />
+                    </div>
+                    Have questions about your resume?
+                  </h4>
+                  <div className="flex gap-3">
+                    <Input 
+                      placeholder="E.g. What skills am I missing for a Frontend Developer role?" 
+                      value={userQuestion}
+                      onChange={(e) => setUserQuestion(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && handleAskQuestion()}
+                      className="py-6 rounded-xl border-gray-200 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                    />
+                    <Button 
+                      onClick={handleAskQuestion} 
+                      disabled={qaLoading || !userQuestion.trim()}
+                      className="py-6 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-md shadow-blue-200 transition-all hover:-translate-y-0.5"
+                    >
+                      {qaLoading ? <LoaderCircle className="w-5 h-5 animate-spin" /> : 'Ask'}
+                    </Button>
                   </div>
-                )}
+                  
+                  {qaResult && (
+                    <div className="mt-6 p-6 bg-white border border-blue-100 rounded-xl whitespace-pre-wrap text-sm text-gray-700 shadow-sm font-medium leading-relaxed">
+                      <span className="font-bold text-blue-900 block mb-3 text-base flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-600"></div> Answer
+                      </span>
+                      {qaResult}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
           </div>

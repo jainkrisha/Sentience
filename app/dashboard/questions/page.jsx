@@ -31,31 +31,35 @@ const Questions = () => {
     ]
 
     return (
-        <div className="leading-relaxed mt-12 mx-4 md:mx-8">
-            <div className="text-center space-y-3">
-                <h1 className="block text-gray-800 text-3xl font-semibold">
+        <div className="leading-relaxed py-12 px-4 md:px-8 max-w-4xl mx-auto min-h-screen">
+            <div className="text-center space-y-4 mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <h1 className="block text-gray-900 text-4xl font-extrabold tracking-tight">
                     Frequently Asked Questions
                 </h1>
-                <p className="text-gray-500 max-w-lg mx-auto">
-                    Answered all frequently asked questions. Can’t find the answer you’re looking for? feel free to contact us.
+                <p className="text-gray-500 max-w-2xl mx-auto text-lg font-medium">
+                    Everything you need to know about the product and billing. Can’t find the answer you’re looking for? Feel free to contact us.
                 </p>
             </div>
-            <div className="relative bg-white rounded-md mt-10 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl sm:mx-auto" style={{boxShadow: '0px 7px 20px 7px #F1F1F1'}}>
-                <div className="grid gap-4 py-8 md:grid-cols-2">
-                    {
-                        faqsList.map((item, idx) => (
-                            <div className="space-y-3 mt-6 px-8" key={idx}>
-                                <h4 className="text-gray-800 text-xl font-semibold ">
-                                    {item.q}
-                                </h4>
-                                <p className="text-gray-500">
-                                    {item.a}
-                                </p>
-                            </div>
-                        ))
-                    }
-                </div>
-                <span className="w-0.5 h-0.7 bg-gray-200 mb-4 absolute top-0 left-0 right-0 hidden md:block"></span>
+
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                {faqsList.map((item, idx) => (
+                    <details 
+                        key={idx} 
+                        className="group bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:border-blue-100 transition-all [&_summary::-webkit-details-marker]:hidden"
+                    >
+                        <summary className="flex items-center justify-between p-6 cursor-pointer text-gray-900 font-bold text-lg select-none">
+                            {item.q}
+                            <span className="relative flex-shrink-0 ml-4 w-6 h-6 flex items-center justify-center text-blue-600 bg-blue-50 rounded-full group-open:bg-blue-600 group-open:text-white transition-colors">
+                                <svg className="absolute w-4 h-4 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </span>
+                        </summary>
+                        <div className="px-6 pb-6 text-gray-500 font-medium leading-relaxed border-t border-gray-50 pt-4 group-open:animate-in group-open:fade-in group-open:slide-in-from-top-2">
+                            {item.a}
+                        </div>
+                    </details>
+                ))}
             </div>
         </div>
     )

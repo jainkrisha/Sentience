@@ -222,10 +222,10 @@ Return ONLY this JSON:
         {/* Record Button */}
         <Button
           variant="outline"
-          className={`w-full flex items-center gap-3 text-base font-semibold py-6 border-2 transition-all ${
+          className={`w-full flex items-center gap-3 text-base font-semibold py-6 border-2 transition-all rounded-xl ${
             isRecording
-              ? 'border-red-500 text-red-600 animate-pulse'
-              : 'border-indigo-500 text-indigo-700 hover:bg-indigo-50'
+              ? 'border-red-500 text-red-600 animate-pulse bg-red-50'
+              : 'border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-300'
           }`}
           onClick={toggleRecording}
           disabled={isTranscribing || loading}
@@ -245,7 +245,7 @@ Return ONLY this JSON:
             Live Transcript — you can also edit or type your answer below:
           </p>
           <textarea
-            className="w-full min-h-[120px] bg-gray-50 border border-gray-300 rounded-lg p-4 text-gray-800 text-sm outline-none focus:ring-2 focus:ring-indigo-400 resize-y"
+            className="w-full min-h-[120px] bg-gray-50 border border-gray-200 rounded-xl p-4 text-gray-800 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-y"
             value={userAnswer}
             onChange={(e) => setUserAnswer(e.target.value)}
             placeholder="Your transcribed answer will appear here. You can also type manually..."
@@ -255,7 +255,7 @@ Return ONLY this JSON:
 
         {/* Submit Button */}
         <Button
-          className="w-full bg-indigo-700 hover:bg-indigo-800 text-white py-6 text-base font-semibold flex items-center gap-2"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-base font-bold flex items-center justify-center gap-2 rounded-xl shadow-lg shadow-blue-200 transition-all hover:-translate-y-0.5"
           disabled={loading || isRecording || isTranscribing || userAnswer.trim().length < 10}
           onClick={updateUserAnswerInDb}
         >

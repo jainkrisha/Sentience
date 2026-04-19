@@ -2,15 +2,20 @@ import React from 'react';
 import { db } from '../../../utils/db';
 import { preparation_planner } from '../../../utils/schema';
 import { eq } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 export default async function PlannerPage() {
-  const user = await currentUser();
-  if (!user) redirect('/');
-  const userEmail = user.primaryEmailAddress.emailAddress;
+  const cookieStore = cookies();
+  const userEmailCookie = cookieStore.get('user_email');
+  
+  if (!userEmailCookie?.value) {
+    redirect('/auth-signin');
+  }
+  
+  const userEmail = decodeURIComponent(userEmailCookie.value);
 
   const planners = await db.select().from(preparation_planner).where(eq(preparation_planner.userEmail, userEmail));
 

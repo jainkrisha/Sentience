@@ -2,13 +2,17 @@ import { NextResponse } from 'next/server';
 import { db } from '../../../../utils/db';
 import { improvement_roadmap } from '../../../../utils/schema';
 import { chatSession } from '../../../../utils/Geminimodel';
-import { currentUser } from '@clerk/nextjs/server';
+
+/** Read the user email from the cookie set at sign-in. */
+function getUserEmail(req) {
+  const cookie = req.cookies.get('user_email');
+  return cookie?.value ? decodeURIComponent(cookie.value) : null;
+}
 
 export async function POST(req) {
   try {
-    const user = await currentUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    const userEmail = user.primaryEmailAddress.emailAddress;
+    const userEmail = getUserEmail(req);
+    if (!userEmail) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const { feedbackData, sessionId } = await req.json();
 
@@ -18,7 +22,7 @@ export async function POST(req) {
 
     // Filter to only weak answers (rating < 6)
     const weakAnswers = feedbackData.filter(item => parseInt(item.rating) < 6);
-    
+
     if (weakAnswers.length === 0) {
       return NextResponse.json({ success: true, message: 'No weak areas found' });
     }
@@ -63,7 +67,7 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, items: insertedItems });
   } catch (error) {
-    console.error("Roadmap update error:", error);
+    console.error('Roadmap update error:', error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
