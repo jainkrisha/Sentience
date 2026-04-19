@@ -7,17 +7,17 @@ import { LoaderCircle, Lock, Mail, UserPlus, CheckCircle2, User, KeyRound, Arrow
 
 export default function SignUpPage() {
   const router = useRouter();
-  
+
   // Step Management
   const [step, setStep] = useState(1); // 1 = Details, 2 = OTP
-  
+
   // Form State
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -30,7 +30,7 @@ export default function SignUpPage() {
       setError('Password must be at least 6 characters');
       return;
     }
-    
+
     if (!name || !username || !email || !password) {
       setError('Please fill in all fields');
       return;
@@ -47,7 +47,7 @@ export default function SignUpPage() {
   // Handle OTP Input Change
   const handleOtpChange = (index, value) => {
     if (isNaN(value)) return;
-    
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -105,7 +105,7 @@ export default function SignUpPage() {
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-md">
               <span className="text-white font-bold text-xl leading-none">I</span>
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
+            <span className="font-extrabold text-2xl tracking-tight text-gray-900">SENTIENCE</span>
           </div>
 
           <div className="mb-10 text-center lg:text-left">
@@ -125,7 +125,7 @@ export default function SignUpPage() {
 
           {step === 1 ? (
             <form onSubmit={handleRequestOtp} className="space-y-5">
-              
+
               {/* Full Name & Username Row */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
@@ -243,7 +243,7 @@ export default function SignUpPage() {
                   <><UserPlus className="w-5 h-5" /> Verify & Create Account</>
                 )}
               </button>
-              
+
               <button
                 type="button"
                 onClick={() => setStep(1)}
@@ -270,7 +270,7 @@ export default function SignUpPage() {
         <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-30 mix-blend-multiply"></div>
         <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-blue-100 rounded-full blur-[150px] opacity-50 pointer-events-none"></div>
         <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-cyan-50 rounded-full blur-[120px] opacity-50 pointer-events-none"></div>
-        
+
         <div className="relative z-10 flex flex-col justify-center h-full px-16 xl:px-24">
           <Link href="/" className="absolute top-10 right-16 flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-md">
@@ -284,13 +284,13 @@ export default function SignUpPage() {
               Join for Free
             </div>
             <h1 className="text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-              Unlock Your <br/>
+              Unlock Your <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">True Potential</span>
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed max-w-md">
               Get access to unlimited mock interviews, real-time behavioral tracking, and instant feedback. Prep smarter, not harder.
             </p>
-            
+
             {/* Feature snippet */}
             <div className="mt-12 space-y-6 w-full">
               <div className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
