@@ -25,18 +25,19 @@ function Feedback({ params }) {
     GetInterviewData();
   }, []);
 
-  useEffect(() => {
-    if (feedbackData.length > 0 && !roadmapUpdated) {
-      updateRoadmap(feedbackData);
-    }
-  }, [feedbackData, roadmapUpdated]);
 
-  const updateRoadmap = async (data) => {
+
+  const updateRoadmap = async (data, metrics, session) => {
     try {
       const res = await fetch('/api/roadmap/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ feedbackData: data, sessionId: params.interviewid })
+        body: JSON.stringify({ 
+          feedbackData: data, 
+          sessionId: params.interviewid,
+          sessionMetrics: metrics,
+          sessionInfo: session
+        })
       });
       const result = await res.json();
       if (result.success && result.items && result.items.length > 0) {
@@ -61,9 +62,22 @@ function Feedback({ params }) {
     const metricsResult = await db.select()
       .from(session_metrics)
       .where(eq(session_metrics.sessionId, params.interviewid));
+      
+    const sessionMet = metricsResult.length > 0 ? metricsResult[0] : null;
+    if (sessionMet) {
+      setSessionMetrics(sessionMet);
+    }
     
-    if (metricsResult.length > 0) {
-      setSessionMetrics(metricsResult[0]);
+    // Call update roadmap directly so we have all data
+    if (result.length > 0 && !roadmapUpdated) {
+      // Also get session info if needed, but we don't fetch it here yet. Let's fetch it:
+      const { interview_sessions } = await import('@/utils/schema');
+      const sessionRes = await db.select()
+        .from(interview_sessions)
+        .where(eq(interview_sessions.mockId, params.interviewid));
+      const sessionInfo = sessionRes.length > 0 ? sessionRes[0] : null;
+
+      updateRoadmap(result, sessionMet, sessionInfo);
     }
   };
 

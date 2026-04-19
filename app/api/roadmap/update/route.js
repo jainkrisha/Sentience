@@ -14,34 +14,45 @@ export async function POST(req) {
     const userEmail = getUserEmail(req);
     if (!userEmail) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { feedbackData, sessionId } = await req.json();
+    const { feedbackData, sessionId, sessionMetrics, sessionInfo } = await req.json();
 
     if (!feedbackData || feedbackData.length === 0) {
       return NextResponse.json({ error: 'Feedback data required' }, { status: 400 });
     }
 
-    // Filter to only weak answers (rating < 6)
     const weakAnswers = feedbackData.filter(item => parseInt(item.rating) < 6);
+    const hasBehavioralIssues = sessionMetrics && (sessionMetrics.eyeContactScore < 70 || sessionMetrics.badPostureCount > 2);
 
-    if (weakAnswers.length === 0) {
-      return NextResponse.json({ success: true, message: 'No weak areas found' });
+    if (weakAnswers.length === 0 && !hasBehavioralIssues) {
+      return NextResponse.json({ success: true, message: 'No significant weak areas found to add to roadmap' });
     }
 
-    const prompt = `Analyze these weak interview answers.
-    Convert them into actionable improvement roadmap items.
-    Merge similar weaknesses into single concise topics.
-    Return JSON format:
+    const jobPosition = sessionInfo?.jobPosition || 'General Role';
+    const companyModeMatch = sessionInfo?.jobDescription?.match(/Company:\s*(.*)/i);
+    const companyName = companyModeMatch ? companyModeMatch[1] : '';
+
+    const prompt = `Analyze these interview results to generate a personalized Improvement Roadmap.
+    Base your analysis on: semantic gaps in user answers, repeated weak areas, behavioral score output, and user answer quality. If a target company is implied by the job role or description, include company-specific weaknesses.
+    
+    Context:
+    - Target Role: ${jobPosition}
+    - Job/Company Info: ${sessionInfo?.jobDescription || 'N/A'}
+    - Behavioral Scores: Eye Contact: ${sessionMetrics?.eyeContactScore || 'N/A'}%, Bad Postures: ${sessionMetrics?.badPostureCount || 'N/A'}, Hand Gestures: ${sessionMetrics?.handGestureCount || 'N/A'}
+    
+    Interview Details (Focus on items with lower ratings and the actionable feedback provided):
+    ${JSON.stringify(feedbackData.map(f => ({ question: f.question, userAnswer: f.userAnswer, rating: f.rating, feedback: f.feedback })))}
+
+    Convert identified weaknesses (Technical, Behavioral, Project-related) into actionable roadmap items.
+    Return ONLY a JSON array, for example:
     [
       {
         "topic": "string",
         "category": "string (Technical / Behavioral / Project)",
-        "description": "string",
+        "description": "text (specific, actionable)",
         "priority": "High / Medium / Low",
-        "company_tag": "string (optional)"
+        "company_tag": "string (optional, only if highly specific to the target company)"
       }
-    ]
-    
-    Data: ${JSON.stringify(weakAnswers)}`;
+    ]`;
 
     const aiResult = await chatSession.sendMessage(prompt);
     let aiResponseText = aiResult.response.text();
