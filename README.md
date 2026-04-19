@@ -1,294 +1,79 @@
-<div align="center">
+# Sentience: AI Interview Coach
 
-# 🤖 AI Interview Coach
+**Sentience** is a comprehensive, AI-powered career preparation platform designed to simulate realistic job interviews and act as an intelligent career coach. It analyzes **what** you say (verbal responses), **how** you look (non-verbal cues), and **how** your resume ranks (ATS), providing a complete feedback loop to help you land your dream job.
 
-### Your Personal AI-Powered Mock Interview Platform
+## 🚀 Features
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue?logo=python)](https://python.org/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38bdf8?logo=tailwind-css)](https://tailwindcss.com/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-00e699?logo=postgresql)](https://neon.tech/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+- **Smart Resume Scanning (ATS Checker):** Upload a PDF resume to receive an ATS compatibility score, identify missing keywords, and get actionable formatting feedback tailored to specific job descriptions.
+- **Personalized Preparation Planner:** Automatically generates a 2-to-4-week custom study roadmap and readiness baseline based on your CV weaknesses.
+- **Live Mock Interviews:** Dynamically generates role-specific interview questions powered by LLMs.
+- **Real-time Non-Verbal Assessment:** Uses Edge AI (MediaPipe & Face-API) in the browser to track posture, eye contact, and hand gestures without sending video feeds to a server.
+- **Audio Integration:** Features an automated Text-to-Speech system to read questions aloud, and Speech-to-Text to transcribe your spoken answers.
+- **Actionable Feedback & Scoring:** AI grades your transcribed answers against ideal responses and automatically updates an "Improvement Roadmap" highlighting areas to practice.
 
-**Practice interviews smarter** — AI-generated role-specific questions, real-time body language analysis, voice transcription, and instant AI feedback. All in one platform.
+## 💻 Tech Stack
 
-</div>
+### Frontend
+- **Framework:** Next.js 14 (App Router) & React 18
+- **Styling:** Tailwind CSS & Shadcn UI (Radix UI primitives)
+- **Animations:** Framer Motion
+- **Media & Audio:** `react-webcam`, `react-hook-speech-to-text`, Web Speech API
 
----
+### Backend & Infrastructure
+- **API Runtime:** Next.js Serverless API Routes
+- **Authentication:** Custom Cookie-Based Auth System (SHA-256 hashed passwords via crypto)
+- **Database:** Neon Postgres (Serverless PostgreSQL)
+- **ORM:** Drizzle ORM
+- **Document Processing:** `pdf-parse`
 
-## ✨ Features
+### AI & Machine Learning
+- **Core LLM Engine:** Meta Llama 3.1 (8B Instruct) via NVIDIA NIM API. Handles dynamic question generation, ATS resume scanning, feedback scoring, and roadmap generation.
+- **Computer Vision (Client-Side):** 
+  - **Google MediaPipe:** Tracks skeletal landmarks for posture and hand gesture detection.
+  - **Face-API.js:** Tracks facial expressions and eye contact directly in the browser.
 
-### 🧠 AI-Powered Question Generation
-- Select from **10 pre-built job roles** (Frontend, Backend, ML, DevOps, etc.) or enter a custom role
-- Add your **tech stack as tags** (React, Python, Docker, etc.)
-- Choose **5, 8, or 10 questions** per session
-- AI generates **role-specific, experience-calibrated** questions across different categories:
-  - Technical Concepts, Coding/Implementation, System Design, Debugging, Best Practices
-
-### 🎤 Voice Answer & Transcription
-- Record your answer via microphone directly in the browser
-- Powered by **Faster-Whisper** (local speech-to-text, privacy-first)
-- Transcribed text is evaluated by AI and stored per question
-
-### 📷 Real-Time Body Language Analysis (MediaPipe)
-- **Eye contact tracking** — detects when you look away from camera
-- **Hand gesture detection** — counts excessive hand movement
-- **Posture/slouching detection** — alerts when shoulders drop
-- All metrics saved to database per session
-
-### 😊 Live Emotion Detection (face-api.js)
-- Detects **7 emotions** in real-time directly in the browser (no server needed):
-  `Angry 😠 | Disgusted 🤢 | Fearful 😨 | Happy 😊 | Neutral 😐 | Sad 😢 | Surprised 😲`
-- Live confidence score + animated bar chart for all 7 emotions
-- Powered by **FER-2013 trained CNN** via face-api.js
-
-### 🐍 Python Live Analysis Window (OpenCV)
-- Standalone OpenCV window showing **all detections simultaneously**:
-  - Emotion bars (FER model)
-  - Eye drowsiness (Eye Aspect Ratio)
-  - Hand skeleton (MediaPipe Hands)
-  - Posture line (MediaPipe Pose)
-- Also serves data to Next.js via REST API on port 8001
-
-### 📊 AI Feedback & Scoring
-- After completing all questions, AI evaluates each answer
-- Gives a **score out of 10** with detailed feedback
-- Compares your answer to the model answer
-- Session metrics (eye contact, posture, gestures) shown on feedback page
-
----
-
-## 🏗️ Tech Stack
-
-| Layer | Technology |
-|---|---|
-| **Frontend** | Next.js 14, React, TailwindCSS, shadcn/ui |
-| **AI / LLM** | NVIDIA NIM API (Llama 3.1 70B) |
-| **Speech-to-Text** | Faster-Whisper (local Python server) |
-| **Emotion Detection** | face-api.js (FER-2013 CNN, runs in browser) |
-| **Body Language** | MediaPipe (Hands, FaceMesh, Pose) |
-| **Python Analysis** | OpenCV + MediaPipe + FER + FastAPI |
-| **Database** | Neon PostgreSQL + Drizzle ORM |
-| **Auth** | Custom cookie-based JWT auth |
-
----
-
-## 🚀 Getting Started
+## 🛠️ Getting Started
 
 ### Prerequisites
+- Node.js (v18+)
+- Neon Postgres Database URL
+- NVIDIA NIM API Key (or Google Gemini API Key)
 
-- **Node.js** 18+
-- **Python** 3.10+
-- **NVIDIA NIM API key** — [Get free key here](https://build.nvidia.com/)
-- **Neon PostgreSQL** database — [Get free DB here](https://neon.tech/)
+### Installation
 
----
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/jainkrisha/Sentience.git
+   cd ai-interview-coach-main
+   ```
 
-### 1. Clone the Repository
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-```bash
-git clone https://github.com/YOUR_USERNAME/ai-interview-coach.git
-cd ai-interview-coach
-```
+3. **Set up Environment Variables:**
+   Create a `.env.local` file in the root directory and add the following:
+   ```env
+   NEXT_PUBLIC_DRIZZLE_DB_URL=your_neon_postgres_url
+   NEXT_PUBLIC_KEY_GEMINI=your_nvidia_nim_api_key
+   # Add any other required environment variables
+   ```
 
-### 2. Install Node.js Dependencies
+4. **Push Database Schema:**
+   ```bash
+   npm run db-push
+   ```
 
-```bash
-npm install
-```
+5. **Run the Development Server:**
+   ```bash
+   npm run dev
+   ```
 
-### 3. Configure Environment Variables
+6. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Create a `.env.local` file in the root:
-
-```env
-# Neon PostgreSQL
-NEXT_PUBLIC_DRIZZLE_DB_URL=postgresql://user:password@host/dbname?sslmode=require
-DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
-
-# NVIDIA NIM API (for LLM question generation + answer feedback)
-NEXT_PUBLIC_KEY_GEMINI=nvapi-YOUR_KEY_HERE
-```
-
-### 4. Set Up the Database
-
-```bash
-npx drizzle-kit push
-```
-
-### 5. Install Python Dependencies
-
-```bash
-# Whisper transcription server
-cd whisper-server
-pip install -r requirements.txt
-cd ..
-
-# Live analysis window (emotion + eyes + hands + posture)
-cd emotion-server
-pip install -r requirements.txt
-cd ..
-```
-
----
-
-## ▶️ Running the Project
-
-You need **3 terminals** running simultaneously:
-
-### Terminal 1 — Next.js App
-```bash
-npm run dev
-```
-→ App available at **http://localhost:3000**
-
-### Terminal 2 — Whisper Transcription Server
-```bash
-cd whisper-server
-python main.py
-```
-→ Runs on **http://localhost:8000**
-> First run downloads the Whisper model (~500MB)
-
-### Terminal 3 — Live Analysis Window (Optional)
-```bash
-cd emotion-server
-python live_analysis.py
-```
-→ Opens an **OpenCV window** with all detections
-→ API available at **http://localhost:8001**
-
----
-
-## 📁 Project Structure
-
-```
-ai-interview-coach/
-├── app/
-│   ├── api/
-│   │   ├── auth/              # Login, signup, logout
-│   │   ├── transcribe/        # Whisper proxy
-│   │   ├── detect_emotion/    # Emotion server proxy
-│   │   └── proxy-gemini/      # NVIDIA LLM proxy
-│   ├── dashboard/
-│   │   ├── _components/       # AddNewInterview, Header, InterviewList
-│   │   └── interview/
-│   │       └── [interviewid]/
-│   │           ├── page.jsx           # Interview detail page
-│   │           ├── start/
-│   │           │   ├── page.jsx       # Interview session
-│   │           │   └── _components/
-│   │           │       ├── LiveInterviewEngine.jsx  # Main interview UI
-│   │           │       ├── RecordAnswerSection.jsx  # Audio recording
-│   │           │       ├── QuestionsList.jsx        # Question tabs
-│   │           │       └── EndInterviewButton.jsx
-│   │           └── feedback/          # Post-interview feedback
-│   ├── auth-signin/           # Sign in page
-│   └── auth-signup/           # Sign up page
-├── components/
-│   └── Camera/
-│       └── Camera.tsx         # Body language + emotion overlay
-├── hooks/
-│   ├── useCamera.ts           # Webcam stream hook
-│   ├── useMediaPipe.ts        # Posture/eye/hand detection
-│   └── useFaceEmotion.ts      # face-api.js emotion detection
-├── context/
-│   └── MetricsContext.tsx     # Global session metrics state
-├── utils/
-│   ├── db.js                  # Drizzle DB client
-│   ├── schema.js              # DB schema
-│   └── Geminimodel.js         # LLM API wrapper
-├── emotion-server/
-│   ├── live_analysis.py       # OpenCV + all detections + FastAPI
-│   └── requirements.txt
-├── whisper-server/
-│   ├── main.py                # Faster-Whisper FastAPI server
-│   └── requirements.txt
-└── public/
-    └── models/                # face-api.js model weights
-```
-
----
-
-## 🎯 How to Use
-
-1. **Sign up / Sign in** at `http://localhost:3000/auth-signin`
-2. On the **Dashboard**, click **"+ Add New"**
-3. Pick your **job role** from presets or type a custom one
-4. Add your **tech stack tags** (auto-fills based on role)
-5. Set your **experience level** and choose **5/8/10 questions**
-6. Click **"Generate Questions"** — AI creates tailored questions
-7. **Record your answers** using the microphone button
-8. Click **Submit** after each answer — AI transcribes and evaluates
-9. After the last question, click **"End Interview"**
-10. View your **Feedback page** with scores, AI comments, and body language metrics
-
----
-
-## 🧩 Architecture Overview
-
-```
-┌─────────────────────────────────────────────────┐
-│                  Browser (Next.js)              │
-│                                                 │
-│  ┌─────────────┐    ┌──────────────────────┐   │
-│  │  Question   │    │   Interview Session   │   │
-│  │  Generator  │    │                      │   │
-│  │  (LLM API)  │    │  Camera (MediaPipe)  │   │
-│  └──────┬──────┘    │  + face-api.js       │   │
-│         │           │  + RecordAnswer      │   │
-│         ▼           └──────────┬───────────┘   │
-│  ┌─────────────┐               │               │
-│  │  Neon DB    │◄──────────────┘               │
-│  │ (Questions, │                               │
-│  │  Answers,   │                               │
-│  │  Metrics)   │                               │
-│  └─────────────┘                               │
-└─────────────────────────────────────────────────┘
-         │                    │
-         ▼                    ▼
-┌─────────────────┐  ┌──────────────────┐
-│  NVIDIA NIM API │  │  Whisper Server  │
-│  Llama 3.1 70B  │  │  (localhost:8000)│
-│  (Questions +   │  │  Audio → Text    │
-│   AI Feedback)  │  └──────────────────┘
-└─────────────────┘
-```
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -m 'Add your feature'`
-4. Push to the branch: `git push origin feature/your-feature`
-5. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgements
-
-- [face-api.js](https://github.com/justadudewhohacks/face-api.js) — Browser-based face & emotion detection
-- [MediaPipe](https://mediapipe.dev/) — Real-time body language analysis
-- [Faster-Whisper](https://github.com/guillaumekln/faster-whisper) — Local speech-to-text
-- [NVIDIA NIM](https://build.nvidia.com/) — LLM inference API
-- [FER-2013](https://www.kaggle.com/datasets/msambare/fer2013) — Emotion recognition dataset
-- [Interview Questions Generator](https://github.com/jainkrisha/Interview-Questions-Generator) — Question generation inspiration
-- [Emotion Detection](https://github.com/atulapra/Emotion-detection) — FER model reference
-
----
-
-<div align="center">
-
-**Built with ❤️ for smarter interview preparation**
-
-</div>
+## 📁 Architecture Overview
+- `app/api/*`: Next.js serverless functions handling auth, roadmap logic, and AI integrations.
+- `app/dashboard/*`: Protected routes for the user dashboard, mock interviews, and ATS checker.
+- `utils/schema.js`: Drizzle ORM schema definitions mapping out the Postgres database structure.
+- `utils/Geminimodel.js`: Wrapper utility for communicating with the AI Inference API.
