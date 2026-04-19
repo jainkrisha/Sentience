@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { interview_sessions } from '@/utils/schema';
 import moment from 'moment';
 import { useRouter } from 'next/navigation';
+import CompanySelector from './CompanySelector';
 
 // ─── Preset tech stacks by role ─────────────────────────────────────────────
 const ROLE_PRESETS = {
@@ -66,6 +67,9 @@ function AddNewInterview() {
     const [questionCount, setQuestionCount] = React.useState(5);
     const [loading, setLoading] = React.useState(false);
     const [userEmail, setUserEmail] = React.useState("");
+    const [selectedCompanies, setSelectedCompanies] = React.useState([]);
+    const [interviewMode, setInterviewMode] = React.useState("company-specific");
+    const [weakAreas, setWeakAreas] = React.useState("");
     const Router = useRouter();
 
     React.useEffect(() => {
@@ -76,6 +80,12 @@ function AddNewInterview() {
         };
         const email = getCookie('user_email');
         if (email) setUserEmail(decodeURIComponent(email));
+
+        fetch('/api/roadmap').then(res => res.json()).then(data => {
+            if (data.items) {
+              setWeakAreas(data.items.map(i => i.topic).join(', '));
+            }
+        }).catch(() => {});
     }, []);
 
     // When a preset role is picked, auto-fill its tech stack
@@ -115,6 +125,18 @@ function AddNewInterview() {
                            "Principal / Staff (9+ years)";
 
         const techList = techTags.join(", ") || "General software engineering";
+        
+        let extraInstructions = "";
+        if (selectedCompanies.length > 0) {
+            if (interviewMode === "company-specific") {
+                extraInstructions += `\n7. COMPANY SPECIFIC: Bias questions heavily toward the interview style of: ${selectedCompanies.join(', ')}.`;
+            } else {
+                extraInstructions += `\n7. COMBINED FOCUS: Mix general questions with expectations for: ${selectedCompanies.join(', ')}.`;
+            }
+        }
+        if (weakAreas) {
+            extraInstructions += `\n8. ADAPTIVE WEAKNESS FOCUS: The user has previously struggled with these weak areas: ${weakAreas}. Prioritize these topics and ask deeper questions on them.`;
+        }
 
         return `You are an expert technical interviewer hiring for ${finalRole} roles.
 
@@ -129,7 +151,7 @@ RULES:
 3. ${expLevel >= 5 ? 'Focus on architecture, scalability, trade-offs' : 'Focus on core concepts and implementations'}
 4. Answers must be concise: 2-3 sentences max, include one example
 5. No generic HR questions
-6. Return ONLY a raw JSON array — NO markdown, NO code fences, NO extra text
+6. Return ONLY a raw JSON array — NO markdown, NO code fences, NO extra text${extraInstructions}
 
 JSON format:
 [{"question":"...","answer":"..."}]
@@ -314,6 +336,12 @@ Return exactly ${questionCount} items.`;
                                 <span className="font-semibold">{techTags.slice(0,4).join(', ')}{techTags.length > 4 ? ` +${techTags.length - 4} more` : ''}</span>
                             </div>
                         )}
+                        
+                        <CompanySelector 
+                          selectedCompanies={selectedCompanies}
+                          setSelectedCompanies={setSelectedCompanies}
+                          onModeChange={setInterviewMode}
+                        />
 
                         <div className='flex gap-3 justify-end pt-1'>
                             <Button type="button" variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>

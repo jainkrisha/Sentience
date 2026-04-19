@@ -8,19 +8,45 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import html2pdf from 'html2pdf.js';
 
 function Feedback({ params }) {
   const [feedbackData, setFeedbackData] = useState([]);
   const [sessionMetrics, setSessionMetrics] = useState(null);
   const [averageRating, setAverageRating] = useState(0);
+  const [roadmapUpdated, setRoadmapUpdated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     GetInterviewData();
   }, []);
+
+  useEffect(() => {
+    if (feedbackData.length > 0 && !roadmapUpdated) {
+      updateRoadmap(feedbackData);
+    }
+  }, [feedbackData, roadmapUpdated]);
+
+  const updateRoadmap = async (data) => {
+    try {
+      const res = await fetch('/api/roadmap/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ feedbackData: data, sessionId: params.interviewid })
+      });
+      const result = await res.json();
+      if (result.success && result.items && result.items.length > 0) {
+        toast.success(`Roadmap updated with ${result.items.length} new improvement areas!`);
+      }
+      setRoadmapUpdated(true);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const GetInterviewData = async () => {
     const result = await db.select()
@@ -41,6 +67,20 @@ function Feedback({ params }) {
     }
   };
 
+  const handleDownloadPdf = () => {
+    const element = document.getElementById('pdf-content');
+    const opt = {
+      margin:       0.5,
+      filename:     'AI_Interview_Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(element).save();
+    toast.success('Downloading PDF Report...');
+  };
+
   const calculateAverageRating = (data) => {
     if (data.length > 0) {
       const totalRating = data.reduce((sum, item) => {
@@ -55,15 +95,24 @@ function Feedback({ params }) {
 
   return (
     <div className='p-10'>
-      <h2 className='text-3xl font-bold text-green-500'>Congratulations!</h2>
-      <h2 className='font-bold text-2xl mt-1'>Here is your Interview Feedback!</h2>
-      {feedbackData.length === 0 ? (
-        <h2 className='text-red-500'>No feedback Found</h2>
-      ) : (
-        <>
-          <h2 className='text-primary text-lg my-3'>
-            Your Overall interview rating: <strong>{averageRating}/10</strong>
-          </h2>
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className='text-3xl font-bold text-green-500'>Congratulations!</h2>
+          <h2 className='font-bold text-2xl mt-1'>Here is your Interview Feedback!</h2>
+        </div>
+        <Button onClick={handleDownloadPdf} className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Download className="w-4 h-4" /> Download PDF Report
+        </Button>
+      </div>
+
+      <div id="pdf-content" className="bg-white p-4 rounded-lg">
+        {feedbackData.length === 0 ? (
+          <h2 className='text-red-500'>No feedback Found</h2>
+        ) : (
+          <>
+            <h2 className='text-primary text-lg my-3'>
+              Your Overall interview rating: <strong>{averageRating}/10</strong>
+            </h2>
 
           <h2 className='text-sm text-gray-500'>
             Find below interview questions with the correct answer, your answer, and feedback for improvement
@@ -124,8 +173,9 @@ function Feedback({ params }) {
           ))}
         </>
       )}
+      </div>
 
-      <Button className="mt-4" onClick={() => router.replace('/dashboard')}>Go Home</Button>
+      <Button className="mt-6" onClick={() => router.replace('/dashboard')}>Go Home</Button>
     </div>
   );
 }

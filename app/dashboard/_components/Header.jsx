@@ -44,11 +44,11 @@ function Header() {
                     ${path == '/dashboard/questions' && 'text-primary font-bold'}
                     `}>Questions</li>
                 </Link>
-                <Link href={"/dashboard/upgrade"}>
+                <Link href={"/dashboard/ats-checker"}>
                     <li className={`hover:text-primary hover:font-bold transition-all
                     cursor-pointer
-                    ${path == '/dashboard/upgrade' && 'text-primary font-bold'}
-                    `}>Upgrade</li>
+                    ${path == '/dashboard/ats-checker' && 'text-primary font-bold'}
+                    `}>ATS Checker</li>
                 </Link>
                 <li className={`hover:text-primary hover:font-bold transition-all
                 cursor-pointer

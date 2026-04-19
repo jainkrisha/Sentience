@@ -43,3 +43,48 @@ export const session_metrics = pgTable("session_metrics", {
   handGestureCount: integer("handGestureCount"),
   badPostureCount: integer("badPostureCount"),
 });
+
+export const cv_uploads = pgTable("cv_uploads", {
+  id: serial("id").primaryKey().notNull(),
+  userEmail: varchar("userEmail", { length: 255 }).notNull(),
+  cvText: text("cvText").notNull(),
+  extractedSkills: text("extractedSkills"), 
+  extractedProjects: text("extractedProjects"), 
+  targetRoles: text("targetRoles"), 
+  createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow(),
+});
+
+export const preparation_planner = pgTable("preparation_planner", {
+  id: serial("id").primaryKey().notNull(),
+  userEmail: varchar("userEmail", { length: 255 }).notNull(),
+  plannerJson: text("plannerJson"),
+  readinessBaseline: integer("readinessBaseline"),
+  active: boolean("active").default(true),
+  createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: 'string' }).defaultNow(),
+});
+
+export const improvement_roadmap = pgTable("improvement_roadmap", {
+  id: serial("id").primaryKey().notNull(),
+  userEmail: varchar("userEmail", { length: 255 }).notNull(),
+  topic: varchar("topic", { length: 255 }).notNull(),
+  category: varchar("category", { length: 255 }),
+  description: text("description"),
+  priority: varchar("priority", { length: 50 }),
+  companyTag: varchar("companyTag", { length: 255 }),
+  sourceInterviewId: varchar("sourceInterviewId", { length: 255 }),
+  status: varchar("status", { length: 50 }).default('active'),
+  lastSeenScore: integer("lastSeenScore"),
+  createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: 'string' }).defaultNow(),
+});
+
+export const target_companies = pgTable("target_companies", {
+  id: serial("id").primaryKey().notNull(),
+  userEmail: varchar("userEmail", { length: 255 }).notNull(),
+  companyName: varchar("companyName", { length: 255 }).notNull(),
+  roleName: varchar("roleName", { length: 255 }),
+  priorityLevel: varchar("priorityLevel", { length: 50 }),
+  active: boolean("active").default(true),
+  createdAt: timestamp("createdAt", { mode: 'string' }).defaultNow(),
+});

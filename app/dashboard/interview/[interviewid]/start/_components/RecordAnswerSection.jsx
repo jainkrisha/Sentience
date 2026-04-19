@@ -9,6 +9,7 @@ import { chatSession } from '@/utils/Geminimodel';
 import { db } from '@/utils/db';
 import moment from 'moment';
 import { interview_answers } from '@/utils/schema';
+import { useMetrics } from '@/context/MetricsContext';
 
 // Removed react-webcam dynamic import since the external Camera handles video
 
@@ -23,6 +24,9 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const streamRef = useRef(null);
+
+  const { metrics } = useMetrics();
+  const [startMetrics, setStartMetrics] = useState(null);
 
   // Get user email from cookies
   useEffect(() => {
@@ -39,6 +43,7 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
 
   const startRecording = async () => {
     try {
+      setStartMetrics({ ...metrics });
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
 
@@ -59,7 +64,8 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
         stream.getTracks().forEach((t) => t.stop());
 
         const audioBlob = new Blob(audioChunksRef.current, { type: mimeType });
-        await transcribeAudio(audioBlob, mimeType);
+        const techStack = `${interviewdata?.jobRole || ''} ${interviewdata?.jobDesc || ''}`;
+        await transcribeAudio(audioBlob, mimeType, techStack);
       };
 
       mediaRecorder.start(); // collect all audio as a single chunk at the end
@@ -89,7 +95,7 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
 
   // ─── Whisper Transcription ─────────────────────────────────────────────────
 
-  const transcribeAudio = async (audioBlob, mimeType) => {
+  const transcribeAudio = async (audioBlob, mimeType, techStack = '') => {
     setIsTranscribing(true);
     toast.info('Transcribing your audio...');
 
@@ -98,6 +104,10 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
       const file = new File([audioBlob], `recording${ext}`, { type: mimeType });
       const formData = new FormData();
       formData.append('audio', file);
+      
+      if (techStack) {
+        formData.append('tech_stack', techStack);
+      }
 
       const res = await fetch('/api/transcribe', {
         method: 'POST',
@@ -141,13 +151,19 @@ function RecordAnswerSection({ mockinterviewquestions, activequestionindex, inte
     setLoading(true);
 
     try {
+      // Calculate how many times posture/eye contact failed during THIS specific answer
+      const qBadPosture = metrics.badPostureDetectionCounter - (startMetrics?.badPostureDetectionCounter || 0);
+      const qNotFacing = metrics.notFacingCounter - (startMetrics?.notFacingCounter || 0);
+
       const feedbackPrompt = `You are a professional interviewer. Evaluate the following interview answer strictly and return ONLY valid JSON, no markdown, no explanation.
 
 Question: ${mockinterviewquestions[activequestionindex]?.question}
 Candidate Answer: ${userAnswer}
+Behavioral Analytics during answer: Bad Posture warnings: ${qBadPosture}, Eye contact lost warnings: ${qNotFacing}.
 
+Evaluate the answer technically, but ALSO include 1-2 lines of feedback about their body language based on the Behavioral Analytics provided.
 Return ONLY this JSON:
-{"rating": <number 1-10>, "feedback": "<detailed constructive feedback in 2-3 sentences>"}`;
+{"rating": <number 1-10>, "feedback": "<detailed constructive technical and behavioral feedback>"}`;
 
       const result = await chatSession.sendMessage(feedbackPrompt);
       let responseText = await result.response.text();
@@ -176,7 +192,6 @@ Return ONLY this JSON:
         feedback: String(jsonResponse?.feedback),
         rating: Number(jsonResponse?.rating),
         userEmail: String(userEmail || 'anonymous'),
-        createdAt: moment().format('DD-MM-yyyy'),
       });
 
       toast.success('Answer submitted! Click Next Question to continue.');

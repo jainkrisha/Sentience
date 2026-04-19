@@ -8,6 +8,7 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
     const audioFile = formData.get('audio');
+    const techStack = formData.get('tech_stack');
 
     if (!audioFile) {
       return NextResponse.json({ error: 'No audio file provided' }, { status: 400 });
@@ -16,6 +17,10 @@ export async function POST(request) {
     // Forward the audio to the faster-whisper Python server
     const whisperForm = new FormData();
     whisperForm.append('audio', audioFile, audioFile.name || 'recording.webm');
+    
+    if (techStack) {
+      whisperForm.append('tech_stack', techStack);
+    }
 
     const whisperRes = await fetch('http://localhost:8000/transcribe', {
       method: 'POST',
