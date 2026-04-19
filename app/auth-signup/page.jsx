@@ -118,9 +118,9 @@ export default function SignUpPage() {
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 mb-12 w-fit group">
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200 group-hover:scale-105 transition-transform">
-            <span className="text-white font-extrabold text-lg leading-none">I</span>
+            <span className="text-white font-extrabold text-lg leading-none">S</span>
           </div>
-          <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
+          <span className="font-extrabold text-2xl tracking-tight text-gray-900">SENTIENCE</span>
         </Link>
 
         <div className="w-full max-w-md mx-auto lg:mx-0">
@@ -324,9 +324,9 @@ export default function SignUpPage() {
         {/* Top wordmark */}
         <div className="relative z-10 flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <span className="text-white font-extrabold text-lg leading-none">I</span>
+            <span className="text-white font-extrabold text-lg leading-none">S</span>
           </div>
-          <span className="font-extrabold text-2xl tracking-tight text-white">IPSUM</span>
+          <span className="font-extrabold text-2xl tracking-tight text-white">SENTIENCE</span>
         </div>
 
         {/* Main content */}

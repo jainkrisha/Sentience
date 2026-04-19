@@ -56,9 +56,14 @@ export async function POST(req) {
 
     const aiResult = await chatSession.sendMessage(prompt);
     let aiResponseText = aiResult.response.text();
-    aiResponseText = aiResponseText.replace(/```json/g, '').replace(/```/g, '').trim();
+    
+    // Extract JSON array block using regex
+    const jsonMatch = aiResponseText.match(/\[[\s\S]*\]/);
+    if (!jsonMatch) {
+      throw new Error("Failed to extract valid JSON array from AI response: " + aiResponseText);
+    }
 
-    const items = JSON.parse(aiResponseText);
+    const items = JSON.parse(jsonMatch[0]);
 
     const insertedItems = [];
     for (const item of items) {

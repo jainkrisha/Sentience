@@ -29,9 +29,9 @@ function Header() {
         <div className='flex p-4 items-center justify-between bg-white shadow-sm border-b border-gray-100'>
             <Link href="/dashboard" className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                    <span className="text-white font-bold text-xl leading-none">I</span>
+                    <span className="text-white font-bold text-xl leading-none">S</span>
                 </div>
-                <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
+                <span className="font-extrabold text-2xl tracking-tight text-gray-900">SENTIENCE</span>
             </Link>
             <ul className='hidden md:flex gap-8 items-center'>
                 <Link href={"/dashboard"}>
@@ -54,7 +54,7 @@ function Header() {
                         User Profile
                     </li>
                 </Link>
-                <Link href={"/dashboard/how"}>
+                <Link href={"/#how-it-works"}>
                     <li className={`text-sm font-medium transition-colors hover:text-blue-600 cursor-pointer ${path == '/dashboard/how' ? 'text-blue-600 font-bold' : 'text-gray-600'}`}>
                         How it Works?
                     </li>

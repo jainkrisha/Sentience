@@ -37,10 +37,14 @@ export async function POST(req) {
 
     const aiResult = await chatSession.sendMessage(prompt);
     let aiResponseText = aiResult.response.text();
-    // Clean up if the AI wrapped it in markdown block
-    aiResponseText = aiResponseText.replace(/```json/g, '').replace(/```/g, '').trim();
+    
+    // Extract JSON block using regex to ignore any surrounding conversational text
+    const jsonMatch = aiResponseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error("Failed to extract valid JSON from the AI response.");
+    }
 
-    const analysis = JSON.parse(aiResponseText);
+    const analysis = JSON.parse(jsonMatch[0]);
 
     // Step 2: Save to cv_uploads
     const cvUploadResult = await db.insert(cv_uploads).values({

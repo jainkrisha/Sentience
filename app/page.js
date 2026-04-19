@@ -12,11 +12,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                <span className="text-white font-bold text-xl leading-none">I</span>
+            <div className="flex-shrink-0 flex items-center gap-3 cursor-pointer">
+              <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center shrink-0 shadow-sm">
+                <span className="text-white font-bold text-2xl leading-none">S</span>
               </div>
-              <span className="font-extrabold text-2xl tracking-tight text-gray-900">IPSUM</span>
+              <div className="flex flex-col justify-center">
+                <span className="font-extrabold text-xl md:text-2xl tracking-tight text-gray-900 leading-none">SENTIENCE</span>
+                <span className="text-[9px] font-bold text-blue-600 tracking-[0.2em] uppercase hidden lg:block mt-1 opacity-90">
+                  The Multimodal Behavioral Intelligence Engine
+                </span>
+              </div>
             </div>
 
             {/* Desktop Menu */}
@@ -111,10 +116,10 @@ export default function Home() {
             </div>
             
             <div>
-              <h2 className="text-blue-600 font-bold uppercase tracking-wider text-sm mb-3">About IPSUM</h2>
+              <h2 className="text-blue-600 font-bold uppercase tracking-wider text-sm mb-3">About SENTIENCE</h2>
               <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 leading-tight">Your personal career accelerator.</h3>
               <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                We built IPSUM because traditional interview preparation is broken. Reading lists of questions doesn't prepare you for the pressure of speaking to a real person.
+                We built SENTIENCE because traditional interview preparation is broken. Reading lists of questions doesn't prepare you for the pressure of speaking to a real person.
               </p>
               <p className="text-gray-600 text-lg leading-relaxed mb-8">
                 Our advanced AI simulates real interview environments, tracking everything from the keywords you use to your posture and eye contact, giving you a competitive edge.
@@ -171,7 +176,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-blue-600 font-bold uppercase tracking-wider text-sm mb-3">Simple Process</h2>
-            <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">How IPSUM Works</h3>
+            <h3 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">How SENTIENCE Works</h3>
             <p className="text-lg text-gray-500">Three simple steps to transform your interview performance.</p>
           </div>
 
@@ -211,7 +216,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <h2 className="text-3xl md:text-5xl font-extrabold text-white mb-6">Ready to crack your dream job?</h2>
           <p className="text-blue-100 text-lg md:text-xl mb-10 max-w-2xl mx-auto">
-            Join thousands of professionals who have upgraded their careers using IPSUM's intelligent coaching platform.
+            Join thousands of professionals who have upgraded their careers using SENTIENCE's intelligent coaching platform.
           </p>
           <Link href="/auth-signup">
             <Button className="h-14 px-10 text-lg rounded-full bg-white text-blue-700 hover:bg-gray-50 shadow-xl transition-all hover:-translate-y-1 font-bold">
@@ -229,9 +234,9 @@ export default function Home() {
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl leading-none">I</span>
+                  <span className="text-white font-bold text-xl leading-none">S</span>
                 </div>
-                <span className="font-extrabold text-2xl tracking-tight text-white">IPSUM</span>
+                <span className="font-extrabold text-2xl tracking-tight text-white">SENTIENCE</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
                 Empowering candidates worldwide to interview with confidence and secure top-tier opportunities.
@@ -255,7 +260,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-            <p>&copy; {new Date().getFullYear()} IPSUM AI Interview Coach. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} SENTIENCE AI Interview Coach. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <span>Made with logic and design.</span>
             </div>

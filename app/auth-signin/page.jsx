@@ -41,7 +41,7 @@ export default function SignInPage() {
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-bold mb-2">Sign In</h1>
-        <p className="text-gray-600 mb-6">Welcome back to IPSUM</p>
+        <p className="text-gray-600 mb-6">Welcome back to SENTIENCE</p>
 
         {error && (
           <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md text-sm">

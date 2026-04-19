@@ -5,33 +5,34 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function ReadinessTracker() {
-  const [data, setData] = useState(null);
+  const [roadmapItems, setRoadmapItems] = useState(0);
+  const [plannerData, setPlannerData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('planner');
 
   useEffect(() => {
-    // Actually, we could fetch roadmap items to count them
-    // and maybe the latest session score for readiness.
-    // For now, doing a basic fetch to the roadmap to show pending items count.
-    fetchRoadmapData();
+    fetchData();
   }, []);
 
-  const fetchRoadmapData = async () => {
+  const fetchData = async () => {
     try {
-      const res = await fetch('/api/roadmap');
-      const roadmapData = await res.json();
+      const [roadmapRes, plannerRes] = await Promise.all([
+        fetch('/api/roadmap'),
+        fetch('/api/planner')
+      ]);
       
-      setData({
-        activeItems: roadmapData.items ? roadmapData.items.length : 0,
-        // Mocking readiness score for now
-        readinessScore: 65,
-      });
+      const roadmapData = await roadmapRes.json();
+      const plannerJson = await plannerRes.json();
+      
+      setRoadmapItems(roadmapData.items ? roadmapData.items.length : 0);
+      if (plannerJson.planner) {
+        setPlannerData(plannerJson);
+      }
     } catch (error) {
       console.error("Failed to load readiness tracker data", error);
     }
     setLoading(false);
   };
-
-  const [activeTab, setActiveTab] = useState('planner');
 
   if (loading) {
     return (
@@ -42,11 +43,15 @@ export default function ReadinessTracker() {
     );
   }
 
-  const hasData = data?.activeItems > 0;
+  const hasPlanner = !!plannerData;
+  const hasRoadmap = roadmapItems > 0;
+
+  // Decide what to show based on the active tab
+  const hasDataForTab = activeTab === 'planner' ? hasPlanner : hasRoadmap;
 
   return (
     <div className="mb-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      {!hasData && (
+      {!hasPlanner && (
         <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl p-8 shadow-lg shadow-blue-200 mb-8 flex flex-col md:flex-row items-center justify-between text-white">
           <div>
             <h3 className="text-2xl font-extrabold mb-2">No Preparation Planner Found</h3>
@@ -95,15 +100,21 @@ export default function ReadinessTracker() {
                   : 'Review the areas of improvement identified from your latest mock interviews.'}
               </p>
               
-              {hasData ? (
+              {hasDataForTab ? (
                 <div className="flex flex-wrap gap-8 mt-8">
                   <div className="bg-gray-50 px-6 py-4 rounded-xl border border-gray-100 flex-1 min-w-[150px]">
-                    <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Overall Readiness</p>
-                    <p className="text-4xl font-black text-blue-600">{data?.readinessScore}%</p>
+                    <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">
+                      {activeTab === 'planner' ? 'Readiness Baseline' : 'Latest Average Score'}
+                    </p>
+                    <p className="text-4xl font-black text-blue-600">
+                      {activeTab === 'planner' ? `${plannerData.readinessBaseline}%` : 'Needs Mock Data'}
+                    </p>
                   </div>
                   <div className="bg-gray-50 px-6 py-4 rounded-xl border border-gray-100 flex-1 min-w-[150px]">
                     <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Active Areas</p>
-                    <p className="text-4xl font-black text-amber-500">{data?.activeItems}</p>
+                    <p className="text-4xl font-black text-amber-500">
+                      {activeTab === 'planner' ? Object.keys(plannerData.planner).length : roadmapItems}
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -114,9 +125,9 @@ export default function ReadinessTracker() {
             </div>
             
             <div className="flex flex-col gap-3 min-w-[200px] w-full md:w-auto shrink-0">
-              <Link href="/dashboard/roadmap">
+              <Link href={activeTab === 'planner' ? "/dashboard/planner" : "/dashboard/roadmap"}>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-6 rounded-xl shadow-lg shadow-blue-100 transition-transform hover:-translate-y-1">
-                  View Full Roadmap
+                  {activeTab === 'planner' ? 'View Full Planner' : 'View Full Roadmap'}
                 </Button>
               </Link>
               <Link href="/dashboard/cv-upload">
